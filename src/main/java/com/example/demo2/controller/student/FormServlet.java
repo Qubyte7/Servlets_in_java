@@ -1,4 +1,4 @@
-package com.example.demo2.controller;
+package com.example.demo2.controller.student;
 
 import com.example.demo2.StudetDao.Student;
 import com.example.demo2.StudetDao.StudentDaoImpl;
@@ -24,10 +24,24 @@ public class FormServlet extends HttpServlet {
             String school = req.getParameter("school");
             Student student1 = new Student(id,name,age,school);
             System.out.println("Are we doing something 11 ! 🙊");
-            studentDao.RegisterStudent(student1);
-        System.out.println("Are we doing something 12 ! 🙊");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/Dservlet");
-            dispatcher.forward(req, res);
+
+        try {
+            boolean isStudyAvailable = studentDao.isStudentAlreadyRegistered(id);
+            System.out.println(isStudyAvailable);
+           if(isStudyAvailable){
+                RequestDispatcher dispatcher = req.getRequestDispatcher("alreadyThere.jsp");
+                dispatcher.forward(req,res);
+            } else if(!isStudyAvailable) {
+                studentDao.RegisterStudent(student1);
+                System.out.println("Are we doing something 12 ! 🙊");
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/Dservlet");
+                dispatcher.forward(req, res);
+            };
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
 
 
     }

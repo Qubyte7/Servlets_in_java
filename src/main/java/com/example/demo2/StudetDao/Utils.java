@@ -10,7 +10,7 @@ public class Utils {
    final private String name = "postgres";
 
    Connection conn;
-   public Connection getConn()throws SQLException{
+   public Connection getConn(){
        try{
            Class.forName("org.postgresql.Driver");
            conn = DriverManager.getConnection(url,name,password);

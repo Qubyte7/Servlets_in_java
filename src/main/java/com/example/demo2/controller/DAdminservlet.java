@@ -2,18 +2,18 @@ package com.example.demo2.controller;
 
 import com.example.demo2.StudetDao.Student;
 import com.example.demo2.StudetDao.StudentDaoImpl;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "Dservlet" , value = "/Dservlet")
-public class Dservlet extends HttpServlet {
+@WebServlet("/DAdminservlet")
+public class DAdminservlet extends HttpServlet {
     private String message;
     StudentDaoImpl studentDao;
     public void init(){

@@ -1,22 +1,41 @@
 package com.example.demo2.StudetDao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDaoImpl implements StudentDao {
     Utils u = new Utils();
     @Override
-    public  void RegisterStudent(Student s1){
+    public boolean isStudentAlreadyRegistered(int id) throws Exception {
+        String sql = "SELECT COUNT(*) > 0 AS isavailable FROM student WHERE code = ?";
         Connection conn = null;
+        boolean isRegistered = false;
+
         try {
             conn = u.getConn();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            PreparedStatement selectId = conn.prepareStatement(sql);
+            selectId.setInt(1, id);
+            ResultSet idSelected = selectId.executeQuery();
+
+            if (idSelected.next()) {
+                isRegistered = idSelected.getBoolean("isavailable");
+            }
+        } finally {
+            // Close resources
+            if (conn != null) {
+                conn.close();
+            }
         }
+        System.out.println("IS STUDENT ALREADY IN DATABASE "+isRegistered);
+        return isRegistered;
+    }
+
+
+    @Override
+    public  void RegisterStudent(Student s1){
+        Connection conn = null;
+        conn = u.getConn();
         String insertingQuery = "INSERT INTO student VALUES (?,?,?,?);";
        try {
            PreparedStatement inserting = conn.prepareStatement(insertingQuery);
@@ -27,41 +46,17 @@ public class StudentDaoImpl implements StudentDao {
            inserting.executeUpdate();
            System.out.println(" successfully created ");
        }catch (Exception e){
-           System.out.println(e.getMessage());
+           System.out.println("qwweeww"+e.getMessage());
            e.printStackTrace();
        }
     }
 
 
     @Override
-    public void UpdateStudent(Student s1) {
-        Connection conn = null;
-        try {
-            conn = u.getConn();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    String sql = " UPDATE student SET name=? ,age=?,school= ? where code = ?;";
-    try{
-        PreparedStatement updating =conn.prepareStatement(sql);
-        updating.setString(1,s1.getName());
-        updating.setInt(2,s1.getAge());
-        updating.setString(3,s1.getSchool());
-        updating.setInt(4,s1.getId());
-        updating.executeUpdate();
-        System.out.println("successfully Updated !");
-    }catch (Exception e){}
-    }
-
-    @Override
     public void deleteStudent(int id) {
         Connection conn = null;
-        try {
-            conn = u.getConn();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    String sql = "DELETE FROM student where code = ?;";
+        conn = u.getConn();
+        String sql = "DELETE FROM student where code = ?;";
     try{
         PreparedStatement deleting= conn.prepareStatement(sql);
         deleting.setInt(1,id);
@@ -75,11 +70,7 @@ public class StudentDaoImpl implements StudentDao {
     @Override
     public void selectStudent(int id) {
         Connection conn = null;
-        try {
-            conn = u.getConn();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        conn = u.getConn();
         String sql ="SELECT * FROM where code=?;";
         try {
             PreparedStatement selectStudent = conn.prepareStatement(sql);
@@ -95,11 +86,7 @@ public class StudentDaoImpl implements StudentDao {
         List<Student> students = new ArrayList<>();
         String sql = " SELECT code,name,age,school FROM student;";
         Connection conn = null;
-        try {
-            conn = u.getConn();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        conn = u.getConn();
         try{
             PreparedStatement select = conn.prepareStatement(sql);
             ResultSet sr = select.executeQuery();
@@ -110,6 +97,8 @@ public class StudentDaoImpl implements StudentDao {
                 int age = sr.getInt(3);
                 String school = sr.getString(4);
                 students.add(new Student(code, name, age, school));
+                System.out.println(name + " studies at " + school );
+
             }
 
             System.out.println("succesfully selected all student !");
