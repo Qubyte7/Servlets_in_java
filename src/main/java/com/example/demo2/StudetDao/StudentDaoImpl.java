@@ -36,17 +36,33 @@ public class StudentDaoImpl implements StudentDao {
     public  void RegisterStudent(Student s1){
         Connection conn = null;
         conn = u.getConn();
-        String insertingQuery = "INSERT INTO student VALUES (?,?,?,?);";
+        String insertingQuery = "INSERT INTO student (name,age,school) VALUES (?,?,?);";
        try {
            PreparedStatement inserting = conn.prepareStatement(insertingQuery);
-           inserting.setInt(1,s1.getId());
-           inserting.setString(2,s1.getName());
-           inserting.setInt(3,s1.getAge());
-           inserting.setString(4,s1.getSchool());
+           inserting.setString(1,s1.getName());
+           inserting.setInt(2,s1.getAge());
+           inserting.setString(3,s1.getSchool());
            inserting.executeUpdate();
            System.out.println(" successfully created ");
        }catch (Exception e){
            System.out.println("qwweeww"+e.getMessage());
+           e.printStackTrace();
+       }
+    }
+
+    @Override
+    public void UpdateStudent(Student s1) {
+       String sql = " UPDATE student SET name = ?,age = ?, school = ? where code = ?;";
+       try(Connection conn = u.getConn()){
+           PreparedStatement updating  = conn.prepareStatement(sql);
+           updating.setString(1, s1.getName());
+           updating.setInt(2,s1.getAge());
+           updating.setString(3, s1.getSchool());
+           updating.setInt(4,s1.getId());
+           updating.executeUpdate();
+           System.out.println("Successfully Updated !");
+       }catch (Exception e){
+           System.out.println("Problem in Updating " + e.getMessage());
            e.printStackTrace();
        }
     }
@@ -68,17 +84,36 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public void selectStudent(int id) {
+    public Student selectStudent(int id) {
         Connection conn = null;
         conn = u.getConn();
-        String sql ="SELECT * FROM where code=?;";
+        String sql ="select * from student where code = ?;";
+        Student student = new Student();
         try {
             PreparedStatement selectStudent = conn.prepareStatement(sql);
             selectStudent.setInt(1,id);
-            selectStudent.executeUpdate();
+            ResultSet sr =  selectStudent.executeQuery();
+            int code;
+            String name;
+            int age;
+            String school;
+            System.out.println("we are to fecth !");
+            while (sr.next()){
+                code = sr.getInt(1);
+                student.setId(code);
+                name = sr.getString(2);
+                student.setName(name);
+                age = sr.getInt(3);
+                student.setAge(age);
+                school = sr.getString(4);
+                student.setSchool(school);
+            }
+
+            System.out.println("successfully selected !");
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        return student;
     }
 
     @Override

@@ -48,12 +48,11 @@
 <body>
 <h1>Home</h1>
 <form action="form" method="post">
-    id:     <input type="number" name="id" /><br>
+    <input type="hidden" name="id" /><br>
     name:   <input type="text" name="name" /><br>
     age:    <input type="number" name="age" /><br>
     school: <input type="text" name="school" /><br>
            <input type="submit" />
 </form>
-<button><a href="Home.jsp">VIEW student</a></button>
 </body>
 </html>

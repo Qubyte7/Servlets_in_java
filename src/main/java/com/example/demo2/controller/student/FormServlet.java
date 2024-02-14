@@ -18,25 +18,17 @@ public class FormServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException{
 
-            int id = Integer.parseInt(req.getParameter("id"));
+
             String name = req.getParameter("name");
             int age = Integer.parseInt(req.getParameter("age"));
             String school = req.getParameter("school");
-            Student student1 = new Student(id,name,age,school);
-            System.out.println("Are we doing something 11 ! 🙊");
+            Student student1 = new Student(name,age,school);
+
 
         try {
-            boolean isStudyAvailable = studentDao.isStudentAlreadyRegistered(id);
-            System.out.println(isStudyAvailable);
-           if(isStudyAvailable){
-                RequestDispatcher dispatcher = req.getRequestDispatcher("alreadyThere.jsp");
-                dispatcher.forward(req,res);
-            } else if(!isStudyAvailable) {
                 studentDao.RegisterStudent(student1);
-                System.out.println("Are we doing something 12 ! 🙊");
                 RequestDispatcher dispatcher = req.getRequestDispatcher("/Dservlet");
                 dispatcher.forward(req, res);
-            };
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

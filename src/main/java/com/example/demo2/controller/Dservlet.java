@@ -20,7 +20,7 @@ public class Dservlet extends HttpServlet {
         this.studentDao  = new StudentDaoImpl();
     }
     public  void service(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-        List<Student> students  = studentDao.selectAllStudent();
+        List<Student> students = studentDao.selectAllStudent();
         req.setAttribute("students", students);
         RequestDispatcher dispatcher = req.getRequestDispatcher("Home.jsp");
         dispatcher.forward(req, res);

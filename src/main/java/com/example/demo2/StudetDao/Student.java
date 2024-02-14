@@ -6,8 +6,15 @@ public class Student {
      String name;
      int age;
      String school;
+     public  Student(){}
     public Student(int id, String name, int age, String school) {
         this.id = id;
+        this.name = name;
+        this.age = age;
+        this.school = school;
+    }
+
+    public Student(String name, int age, String school) {
         this.name = name;
         this.age = age;
         this.school = school;

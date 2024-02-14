@@ -1,5 +1,6 @@
 package com.example.demo2.controller.Admin;
 
+import com.example.demo2.HashPassword;
 import com.example.demo2.user.*;
 
 import javax.servlet.RequestDispatcher;
@@ -16,6 +17,7 @@ public class RegisterAdmin extends HttpServlet {
     UserImpl userimpl;
    LoginDao loginDao;
    UserChecking check;
+   HashPassword hashPassword;
     public void init(){
         this.loginDao = new LoginDao();
         this.userimpl = new UserImpl();
@@ -25,10 +27,12 @@ public class RegisterAdmin extends HttpServlet {
         String name = req.getParameter("name");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
-        User user = new User(name,email,password);
+        String hashedPassword = HashPassword.dohashing(password);
+
+        User user = new User(name,email,hashedPassword);
         LoginBean alreadyThere = new LoginBean();
         alreadyThere.setUsername(email);
-        alreadyThere.setPassword(password);
+        alreadyThere.setPassword(hashedPassword);
         HttpSession session = req.getSession(true);
 try {
     if (check.validate(alreadyThere.getUsername())) {
@@ -39,7 +43,7 @@ try {
     } else {
         userimpl.RegisterAdmin(user);
         session.setAttribute("username",email);
-        res.sendRedirect("DAdminservlet");
+        res.sendRedirect("AdminLogin.jsp");
     }
 }catch (Exception e){
     System.out.println(e.getMessage());
